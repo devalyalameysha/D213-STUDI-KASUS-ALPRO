@@ -1,0 +1,69 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+using namespace std;
+
+class KTP {
+private:
+    string data[15][2]; 
+    int jumlahData;
+
+public:
+    KTP() {
+        jumlahData = 14;  
+        data[0][0] = "NIK";
+        data[1][0] = "Nama";
+        data[2][0] = "Tempat/Tgl Lahir";
+        data[3][0] = "Jenis Kelamin";
+        data[4][0] = "Gol. Darah";
+        data[5][0] = "Alamat";
+        data[6][0] = "RT/RW";
+        data[7][0] = "Kel/Desa";
+        data[8][0] = "Kecamatan";
+        data[9][0] = "Agama";
+        data[10][0] = "Status Perkawinan";
+        data[11][0] = "Pekerjaan";
+        data[12][0] = "Kewarganegaraan";
+        data[13][0] = "Berlaku Hingga";
+        data[13][1] = "SEUMUR HIDUP";  // default value
+    }
+
+    void inputKTP() {
+        cout << "Masukkan Data KTP:\n";
+        for (int i = 0; i < jumlahData - 1; ++i) {
+            cout << data[i][0] << " : ";
+            getline(cin, data[i][1]);
+        }
+    }
+
+    void tampilkanKTP() {
+        cout << "\n+============= KTP ELEKTRONIK =============+\n";
+        for (int i = 0; i < jumlahData; ++i) {
+            cout << setw(20) << left << data[i][0] << " : " << data[i][1] << endl;
+        }
+        cout << "+==========================================+\n";
+    }
+
+    string getData(int baris, int kolom) {
+        if (baris >= 0 && baris < jumlahData && (kolom == 0 || kolom == 1)) {
+            return data[baris][kolom];
+        }
+        return "";
+    }
+
+    void setData(int baris, const string& isi) {
+        if (baris >= 0 && baris < jumlahData) {
+            data[baris][1] = isi;
+        }
+    }
+};
+int main() {
+    KTP ktpSaya;
+    ktpSaya.inputKTP();
+    ktpSaya.tampilkanKTP();
+
+    cout << "\nAkses individual:\n";
+    cout << "Nama Anda adalah: " << ktpSaya.getData(1, 1) << endl;
+
+    return 0;
+}
