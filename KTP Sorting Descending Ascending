@@ -1,0 +1,234 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+using namespace std;
+
+const int JUMLAH_WILAYAH = 40;
+string wilayah[JUMLAH_WILAYAH][2] = {
+    {"Wirobrajan", "Yogyakarta"}, {"Mantrijeron", "Yogyakarta"},
+    {"Kraton", "Yogyakarta"}, {"Gondomanan", "Yogyakarta"},
+    {"Pakualaman", "Yogyakarta"}, {"Danurejan", "Yogyakarta"},
+    {"Gedongtengen", "Yogyakarta"}, {"Jetis", "Yogyakarta"},
+    {"Tegalrejo", "Yogyakarta"}, {"Umbulharjo", "Yogyakarta"},
+    {"Kotagede", "Yogyakarta"}, {"Depok", "Sleman"},
+    {"Ngaglik", "Sleman"}, {"Ngemplak", "Sleman"},
+    {"Mlati", "Sleman"}, {"Gamping", "Sleman"},
+    {"Godean", "Sleman"}, {"Seyegan", "Sleman"},
+    {"Kalasan", "Sleman"}, {"Berbah", "Sleman"},
+    {"Banguntapan", "Bantul"}, {"Pleret", "Bantul"},
+    {"Jetis", "Bantul"}, {"Imogiri", "Bantul"},
+    {"Pajangan", "Bantul"}, {"Pundong", "Bantul"},
+    {"Kasihan", "Bantul"}, {"Srandakan", "Bantul"},
+    {"Sanden", "Bantul"}, {"Bambanglipuro", "Bantul"},
+    {"Kokap", "Kulon Progo"}, {"Wates", "Kulon Progo"},
+    {"Sentolo", "Kulon Progo"}, {"Panjatan", "Kulon Progo"},
+    {"Lendah", "Kulon Progo"}, {"Temon", "Kulon Progo"},
+    {"Pengasih", "Kulon Progo"}, {"Galur", "Kulon Progo"},
+    {"Playen", "Gunungkidul"}, {"Wonosari", "Gunungkidul"}
+};
+
+string formatTanggal(const string& input) {
+    stringstream ss(input);
+    string hari, bulan, tahun;
+    ss >> hari >> bulan >> tahun;
+
+    if (hari.size() == 1) hari = "0" + hari;
+
+    string namaBulan[] = {"januari", "februari", "maret", "april", "mei", "juni",
+                          "juli", "agustus", "september", "oktober", "november", "desember"};
+    string angkaBulan[] = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+
+    for (int i = 0; i < 12; i++) {
+        if (bulan == namaBulan[i] || bulan == namaBulan[i].substr(0,1) + namaBulan[i].substr(1)) {
+            bulan = angkaBulan[i];
+            break;
+        }
+    }
+
+    return hari + "-" + bulan + "-" + tahun;
+}
+
+class KTP {
+public:
+    char nik[20];
+    string nama, tempat_lahir, tanggal_lahir, jenis_kelamin, gol_darah,
+           alamat, rt_rw, kel_desa, kecamatan, agama,
+           status_perkawinan, pekerjaan, kewarganegaraan, berlaku_hingga;
+};
+
+void pilihKelamin(string& jk) {
+    int pil;
+    cout << "1. Laki-Laki\n2. Perempuan\nPilih Jenis Kelamin: ";
+    cin >> pil; cin.ignore();
+    jk = (pil == 1) ? "Laki-laki" : (pil == 2) ? "Perempuan" : "Tidak Diketahui";
+}
+
+void pilihAgama(string& agama) {
+    cout << "1. Islam\n2. Kristen\n3. Katolik\n4. Hindu\n5. Buddha\n6. Konghucu\nPilih Agama: ";
+    int pil; cin >> pil; cin.ignore();
+    string daftar[] = {"Islam", "Kristen", "Katolik", "Hindu", "Buddha", "Konghucu"};
+    if (pil >= 1 && pil <= 6) agama = daftar[pil - 1];
+    else agama = "Tidak Diketahui";
+}
+
+void inputKTP(KTP& ktp) {
+    cout << "NIK: "; cin >> ktp.nik; cin.ignore();
+    cout << "Nama: "; getline(cin, ktp.nama);
+    cout << "Tempat Lahir: "; getline(cin, ktp.tempat_lahir);
+    string tgl;
+    cout << "Tanggal Lahir (cth: 7 Juni 2002): "; getline(cin, tgl);
+    ktp.tanggal_lahir = formatTanggal(tgl);
+    pilihKelamin(ktp.jenis_kelamin);
+    cout << "Golongan Darah: "; cin >> ktp.gol_darah; cin.ignore();
+    cout << "Alamat: "; getline(cin, ktp.alamat);
+    cout << "RT/RW: "; getline(cin, ktp.rt_rw);
+
+    cout << "Pilih Wilayah:\n";
+    for (int i = 0; i < JUMLAH_WILAYAH; i++) {
+        cout << i + 1 << ". " << wilayah[i][0] << " / " << wilayah[i][1] << endl;
+    }
+    int wil;
+    cout << "Nomor Wilayah: "; cin >> wil; cin.ignore();
+    if (wil >= 1 && wil <= JUMLAH_WILAYAH) {
+        ktp.kel_desa = wilayah[wil - 1][0];
+        ktp.kecamatan = wilayah[wil - 1][1];
+    } else {
+        ktp.kel_desa = "Tidak Diketahui";
+        ktp.kecamatan = "Tidak Diketahui";
+    }
+
+    pilihAgama(ktp.agama);
+    cout << "Status Perkawinan: "; getline(cin, ktp.status_perkawinan);
+    cout << "Pekerjaan: "; getline(cin, ktp.pekerjaan);
+    cout << "Kewarganegaraan: "; getline(cin, ktp.kewarganegaraan);
+    cout << "Berlaku Hingga: "; getline(cin, ktp.berlaku_hingga);
+}
+
+void tampilKTP(const KTP& ktp) {
+    cout << "\n========== DATA KTP ==========\n";
+    cout << "NIK               : " << ktp.nik << endl;
+    cout << "Nama              : " << ktp.nama << endl;
+    cout << "Tempat/Tgl Lahir  : " << ktp.tempat_lahir << ", " << ktp.tanggal_lahir << endl;
+    cout << "Jenis Kelamin     : " << ktp.jenis_kelamin << "  Gol Darah: " << ktp.gol_darah << endl;
+    cout << "Alamat            : " << ktp.alamat << endl;
+    cout << "RT/RW             : " << ktp.rt_rw << endl;
+    cout << "Kelurahan/Desa    : " << ktp.kel_desa << endl;
+    cout << "Kecamatan         : " << ktp.kecamatan << endl;
+    cout << "Agama             : " << ktp.agama << endl;
+    cout << "Status Perkawinan : " << ktp.status_perkawinan << endl;
+    cout << "Pekerjaan         : " << ktp.pekerjaan << endl;
+    cout << "Kewarganegaraan   : " << ktp.kewarganegaraan << endl;
+    cout << "Berlaku Hingga    : " << ktp.berlaku_hingga << endl;
+}
+
+void tampilkanSemua(KTP data[], int n) {
+    for (int i = 0; i < n; i++) tampilKTP(data[i]);
+}
+
+void cariNIK(KTP data[], int n, string target) {
+    for (int i = 0; i < n; i++) {
+        if (data[i].nik == target) {
+            tampilKTP(data[i]);
+            return;
+        }
+    }
+    cout << "NIK tidak ditemukan.\n";
+}
+
+void cariNama(KTP data[], int n, string nama) {
+    bool ketemu = false;
+    for (int i = 0; i < n; i++) {
+        if (data[i].nama.find(nama) != string::npos) {
+            tampilKTP(data[i]);
+            ketemu = true;
+        }
+    }
+    if (!ketemu) cout << "Nama tidak ditemukan.\n";
+}
+
+void urutkanNama(KTP data[], int n, bool naik) {
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if ((naik && data[j].nama > data[j + 1].nama) || (!naik && data[j].nama < data[j + 1].nama))
+                swap(data[j], data[j + 1]);
+}
+
+void urutkanNIK(KTP data[], int n, bool naik) {
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if ((naik && string(data[j].nik) > string(data[j + 1].nik)) ||
+                (!naik && string(data[j].nik) < string(data[j + 1].nik)))
+                swap(data[j], data[j + 1]);
+}
+
+void tampilPerWilayah(KTP data[], int n) {
+    cout << "\n--- Daftar Wilayah ---\n";
+    for (int i = 0; i < JUMLAH_WILAYAH; i++) {
+        cout << i + 1 << ". " << wilayah[i][0] << " / " << wilayah[i][1] << endl;
+    }
+
+    int pilih;
+    cout << "Nomor wilayah: ";
+    cin >> pilih; cin.ignore();
+
+    if (pilih < 1 || pilih > JUMLAH_WILAYAH) {
+        cout << "Wilayah tidak valid.\n";
+        return;
+    }
+
+    string kel = wilayah[pilih - 1][0];
+    string kec = wilayah[pilih - 1][1];
+    bool ada = false;
+
+    for (int i = 0; i < n; i++) {
+        if (data[i].kel_desa == kel && data[i].kecamatan == kec) {
+            tampilKTP(data[i]);
+            ada = true;
+        }
+    }
+    if (!ada) cout << "Tidak ada data untuk wilayah ini.\n";
+}
+
+int main() {
+    int jumlah;
+    cout << "Jumlah data yang ingin dimasukkan: ";
+    cin >> jumlah; cin.ignore();
+    KTP data[100];
+
+    for (int i = 0; i < jumlah; i++) {
+        cout << "\n-- Input Data ke-" << i + 1 << " --\n";
+        inputKTP(data[i]);
+    }
+
+    int menu;
+    do {
+        cout << "\n===== MENU =====\n";
+        cout << "1. Tampilkan Semua\n2. Tampilkan per Wilayah\n";
+        cout << "3. Cari berdasarkan NIK\n4. Cari berdasarkan Nama\n";
+        cout << "5. Urutkan berdasarkan NIK\n6. Urutkan berdasarkan Nama\n0. Keluar\n";
+        cout << "Pilihan: "; cin >> menu; cin.ignore();
+
+        if (menu == 1) tampilkanSemua(data, jumlah);
+        else if (menu == 2) tampilPerWilayah(data, jumlah);
+        else if (menu == 3) {
+            string cari; cout << "NIK: "; getline(cin, cari);
+            cariNIK(data, jumlah, cari);
+        }
+        else if (menu == 4) {
+            string cari; cout << "Nama: "; getline(cin, cari);
+            cariNama(data, jumlah, cari);
+        }
+        else if (menu == 5 || menu == 6) {
+            int urut; cout << "1. Ascending\n2. Descending\nPilihan: ";
+            cin >> urut; cin.ignore();
+            if (menu == 5) urutkanNIK(data, jumlah, urut == 1);
+            else urutkanNama(data, jumlah, urut == 1);
+            cout << "Data berhasil diurutkan.\n";
+        }
+        else if (menu == 0) cout << "Terima kasih.\n";
+        else cout << "Pilihan tidak tersedia.\n";
+
+    } while (menu != 0);
+
+    return 0;
+}
